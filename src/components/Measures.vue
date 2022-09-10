@@ -17,8 +17,10 @@ export default {
       let voice1 = "[V:1]|";
       let voice2 = "[V:2]|";
       for (let i = 0; i < this.measures.length; i++) {
-        voice1 += this.measures[i][0] + " | ";
-        voice2 += this.measures[i][1] + " | ";
+        const ms = this.measures[i];
+        const paddingLength = Math.max(ms[0].length, ms[1].length);
+        voice1 += this.measures[i][0].padEnd(paddingLength, " ") + " | ";
+        voice2 += this.measures[i][1].padEnd(paddingLength, " ") + " | ";
       }
       lines.push(voice1);
       lines.push(voice2);
