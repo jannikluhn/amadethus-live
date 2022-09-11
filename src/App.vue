@@ -14,6 +14,7 @@
         />
       </TransitionGroup>
     </div>
+    <p v-if="lines.length === 0">Waiting for block...</p>
   </div>
 </template>
 
