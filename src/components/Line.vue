@@ -1,6 +1,9 @@
 <template>
   <div class="">
     <h1 class="text-2xl font-bold">Block #{{ blockNumber }}</h1>
+    <h2 class="text-2xl font-bold text-red-500" v-if="isLastPoWBlock">
+      Last PoW block
+    </h2>
     <div class="flex flex-row">
       <div class="w-20">
         <Counter :bpm="bpm" />
@@ -36,6 +39,9 @@ export default {
   computed: {
     blockNumber() {
       return formatNumber(BigInt(this.block.number));
+    },
+    isLastPoWBlock() {
+      return isLastPoWBlock(this.block);
     },
     typeLabel() {
       if (isPoSBlock(this.block)) {
