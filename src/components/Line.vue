@@ -47,9 +47,16 @@ export default {
     },
     difficultyToGo() {
       const d = (TTD - BigInt(this.block.totalDifficulty)) / BigInt(1e15);
-      return formatNumber(d) + "e15";
+      if (d > 0n) {
+        return formatNumber(d) + "e15";
+      } else {
+        return "0";
+      }
     },
     blocksToGo() {
+      if (BigInt(this.block.totalDifficulty) >= TTD) {
+        return formatNumber(0);
+      }
       const s =
         (TTD - BigInt(this.block.totalDifficulty)) /
         BigInt(this.block.difficulty);

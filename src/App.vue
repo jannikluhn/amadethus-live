@@ -3,6 +3,14 @@
     <h1 class="text-center text-4xl font-bold mb-10">
       Amadethus LIVE: The Merge
     </h1>
+    <button
+      v-if="!simulatingMerge"
+      @click="simulatingMerge = true"
+      class="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+    >
+      Simulate Merge
+    </button>
+    <p v-else>Simulating merge</p>
     <div class="space-y-20">
       <TransitionGroup name="lines" tag="Line">
         <Line
@@ -22,6 +30,7 @@
 import seed from "seed-random";
 import { getNextMeasure } from "./music.js";
 import Line from "./components/Line.vue";
+import { isPoWBlock, isLastPoWBlock, TTD } from "./blocks.js";
 
 const WSS_JSON_RPC_URL =
   "wss://mainnet.infura.io/ws/v3/a8bd718c8f3c4190aee14fe884f36d59";
@@ -56,6 +65,8 @@ export default {
       ethereumWS: null,
       lines: [],
       bpm: 180,
+      simulatingMerge: false,
+      previousBlock: null,
     };
   },
 
@@ -95,7 +106,51 @@ export default {
 
   methods: {
     async onNewBlock(header) {
-      const block = await this.fetchFullBlock(header.hash);
+      let block;
+      if (this.simulatingMerge && this.previousBlock !== null) {
+        if (
+          isPoWBlock(this.previousBlock) &&
+          !isLastPoWBlock(this.previousBlock)
+        ) {
+          block = {
+            ...header,
+            ...{
+              totalDifficulty: "0x" + TTD.toString(16),
+            },
+          };
+        } else if (isLastPoWBlock(this.previousBlock)) {
+          block = {
+            ...header,
+            ...{
+              totalDifficulty: "0x" + TTD.toString(16),
+              difficulty: "0x0",
+            },
+          };
+          this.ethereumWS.close();
+          setInterval(() => {
+            this.onNewBlock({
+              ...this.previousBlock,
+              ...{
+                number:
+                  "0x" + (BigInt(this.previousBlock.number) + 1n).toString(16),
+                hash:
+                  "0x" + (BigInt(this.previousBlock.hash) + 1n).toString(16),
+              },
+            });
+          }, 12000);
+        } else {
+          block = {
+            ...header,
+            ...{
+              totalDifficulty: "0x" + TTD.toString(16),
+              difficulty: "0x0",
+            },
+          };
+        }
+      } else {
+        block = await this.fetchFullBlock(header.hash);
+      }
+      this.previousBlock = block;
       const line = getLineFromBlock(block, this.measures);
       this.lines.push(line);
       this.lines.sort((l1, l2) =>
