@@ -22,6 +22,8 @@ import { isPoSBlock, isLastPoWBlock, TTD } from "../blocks.js";
 import Measures from "./Measures.vue";
 import Counter from "./Counter.vue";
 
+const BIG0 = BigInt(0);
+
 function formatNumber(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -47,7 +49,7 @@ export default {
     },
     difficultyToGo() {
       const d = (TTD - BigInt(this.block.totalDifficulty)) / BigInt(1e15);
-      if (d > 0n) {
+      if (d > BIG0) {
         return formatNumber(d) + "e15";
       } else {
         return "0";

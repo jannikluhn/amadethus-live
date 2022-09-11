@@ -12,6 +12,7 @@ export default {
     return {
       n: 0,
       maxN: 3,
+      reps: 2,
       intervalId: null,
     };
   },
@@ -20,9 +21,14 @@ export default {
     this.intervalId = setInterval(() => {
       this.n++;
       if (this.n >= this.maxN) {
-        this.unsetInterval();
+        if (this.reps > 1) {
+          this.n = 0;
+          this.reps -= 1;
+        } else {
+          this.unsetInterval();
+        }
       }
-    }, (1 / this.bpm) * 60 * 1000 * 3);
+    }, (1 / this.bpm) * 60 * 1000);
   },
   unmounted() {
     this.unsetInterval();

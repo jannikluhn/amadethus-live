@@ -39,6 +39,8 @@ const HTTPS_JSON_RPC_URL =
 
 const MEASURES_PER_BLOCK = 4;
 
+const BIG1 = BigInt(1);
+
 function getLineFromBlock(block, previousMeasures) {
   const hash = block.hash;
   const rng = seed(hash);
@@ -64,7 +66,7 @@ export default {
     return {
       ethereumWS: null,
       lines: [],
-      bpm: 180,
+      bpm: 120,
       simulatingMerge: false,
       previousBlock: null,
     };
@@ -132,9 +134,10 @@ export default {
               ...this.previousBlock,
               ...{
                 number:
-                  "0x" + (BigInt(this.previousBlock.number) + 1n).toString(16),
+                  "0x" +
+                  (BigInt(this.previousBlock.number) + BIG1).toString(16),
                 hash:
-                  "0x" + (BigInt(this.previousBlock.hash) + 1n).toString(16),
+                  "0x" + (BigInt(this.previousBlock.hash) + BIG1).toString(16),
               },
             });
           }, 12000);
