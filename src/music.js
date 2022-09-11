@@ -48,7 +48,11 @@ function randomMeasure(rng, measureIndex) {
   let dice = throwDice(rng);
   let index = measureIndices[measureIndex][diceToIndex(dice)];
   let measurePair = getRawMeasurePair(index);
-  return measurePair;
+  return {
+    g: measurePair[0],
+    f: measurePair[1],
+    index: index,
+  };
 }
 
 function getNextMeasure(rng, measures) {

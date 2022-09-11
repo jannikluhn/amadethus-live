@@ -18,9 +18,8 @@ export default {
       let voice2 = "[V:2]|";
       for (let i = 0; i < this.measures.length; i++) {
         const ms = this.measures[i];
-        const paddingLength = Math.max(ms[0].length, ms[1].length);
-        voice1 += this.measures[i][0].padEnd(paddingLength, " ") + " | ";
-        voice2 += this.measures[i][1].padEnd(paddingLength, " ") + " | ";
+        voice1 += ms.g + " | ";
+        voice2 += ms.f + " | ";
       }
       lines.push(voice1);
       lines.push(voice2);
